@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\Workshop;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Date;
-
+use Illuminate\Support\Facades\DB;
 class EventsController extends BaseController
 {
     public function getWarmupEvents() {
@@ -101,7 +102,28 @@ class EventsController extends BaseController
      */
 
     public function getEventsWithWorkshops() {
-        throw new \Exception('implement in coding task 1');
+        //$events = "select * from events";
+        $events = Event::orderBy('id', 'ASC')->get();
+        $workshop = Workshop::orderBy('event_id', 'ASC')->get();
+        
+        
+        for($i = 0; $i < count($events); $i++)
+        {
+            $array = array();
+            for($j = 0; $j < count($workshop); $j++)
+            {       
+                         
+                if($events[$i]->id == $workshop[$j]->event_id)
+                {
+                    array_push($array,$workshop[$j]);                    
+                }
+            }
+            $events[$i]["workshops"] = $array;
+        }
+        
+        return $events;
+               
+        
     }
 
 
